@@ -26,7 +26,7 @@ class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
         "PARAMETER_NAME": {
             "name": "Part Parameter Name",
             "description": "Name of the InvenTree Part Parameter holding the slug",
-            "default": "Work Instruction",
+            "default": "Work Instructions",
         },
     }
 
@@ -42,10 +42,11 @@ class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
         if not target_id:
             return []
 
-        from part.models import PartParameter
+        from common.models import Parameter
 
-        param = PartParameter.objects.filter(
-            part_id=target_id,
+        param = Parameter.objects.filter(
+            model_type__model="part",
+            model_id=target_id,
             template__name=self.get_setting("PARAMETER_NAME"),
         ).first()
 
