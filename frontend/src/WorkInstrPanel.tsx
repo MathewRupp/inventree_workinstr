@@ -6,18 +6,21 @@ import { checkPluginVersion, type InvenTreePluginContext } from '@inventreedb/ui
 interface WorkInstrContext {
   url: string;
   slug: string;
+  revision?: string;
 }
 
 function WorkInstrPanel({ context }: { context: InvenTreePluginContext }) {
-  const { url, slug } = (context?.context as WorkInstrContext) ?? {};
+  const { url, slug, revision } = (context?.context as WorkInstrContext) ?? {};
 
   if (!url) {
     return <Text>No work instruction linked to this part.</Text>;
   }
 
+  const label = revision ? `${slug} — Rev. ${revision}` : slug;
+
   return (
     <Stack p="md" gap="sm">
-      <Text size="sm" c="dimmed">{slug}</Text>
+      <Text size="sm" c="dimmed">{label}</Text>
       <Button
         component="a"
         href={url}

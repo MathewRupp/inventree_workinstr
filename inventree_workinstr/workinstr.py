@@ -69,8 +69,21 @@ class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
         if not slug:
             return []
 
+        from part.models import Part
+
+        try:
+            part_obj = Part.objects.get(pk=part_id)
+            revision = str(part_obj.revision).strip()
+        except Part.DoesNotExist:
+            revision = ""
+
         base_url = self.get_setting("BASE_URL").rstrip("/")
-        full_url = f"{base_url}/{slug.strip('/')}/"
+        slug_clean = slug.strip("/")
+
+        if revision:
+            full_url = f"{base_url}/{slug_clean}/rev/{revision}/"
+        else:
+            full_url = f"{base_url}/{slug_clean}/"
 
         return [
             {
@@ -83,6 +96,7 @@ class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
                 "context": {
                     "url": full_url,
                     "slug": slug,
+                    "revision": revision,
                 },
             }
         ]

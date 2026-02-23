@@ -6,8 +6,9 @@ import { renderWorkInstrPanel } from './WorkInstrPanel';
 
 const mockContext = {
   context: {
-    url: 'http://mat-eng:8088/g400d-300-001/',
+    url: 'http://mat-eng:8088/g400d-300-001/rev/A/',
     slug: 'g400d-300-001',
+    revision: 'A',
   },
   user: { pk: 1, username: 'dev' },
   host: 'http://localhost:8000',
