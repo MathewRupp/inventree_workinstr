@@ -7,10 +7,10 @@ from . import PLUGIN_VERSION
 
 
 class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
-    """Plugin that shows a Work Instructions panel on Part detail pages."""
+    """Plugin that shows a Work Instructions panel on Part detail and Build Order pages."""
 
     AUTHOR = "Mathew Rupp"
-    DESCRIPTION = "Show a Work Instructions link panel on Part detail pages"
+    DESCRIPTION = "Show a Work Instructions link panel on Part detail and Build Order pages"
     VERSION = PLUGIN_VERSION
     MIN_VERSION = "0.12.0"
     NAME = "inventree-workinstr"
@@ -35,18 +35,30 @@ class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
         if context is None:
             return []
 
-        if context.get("target_model") != "part":
+        target_model = context.get("target_model")
+        target_id = context.get("target_id")
+
+        if not target_id:
             return []
 
-        target_id = context.get("target_id")
-        if not target_id:
+        # Resolve the part ID depending on which page we're on
+        if target_model == "part":
+            part_id = target_id
+        elif target_model == "build":
+            try:
+                from build.models import Build
+                build = Build.objects.get(pk=target_id)
+                part_id = build.part_id
+            except Exception:
+                return []
+        else:
             return []
 
         from common.models import Parameter
 
         param = Parameter.objects.filter(
             model_type__model="part",
-            model_id=target_id,
+            model_id=part_id,
             template__name=self.get_setting("PARAMETER_NAME"),
         ).first()
 
