@@ -81,7 +81,7 @@ class WorkInstrPlugin(SettingsMixin, UserInterfaceMixin, InvenTreePlugin):
         slug_clean = slug.strip("/")
 
         if revision:
-            full_url = f"{base_url}/{slug_clean}/rev/{revision}/"
+            full_url = f"{base_url}/{slug_clean}/{revision}/"
         else:
             full_url = f"{base_url}/{slug_clean}/"
 
